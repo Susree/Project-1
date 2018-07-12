@@ -36,12 +36,12 @@ nbins=np.floor(fmax/fmin*10.)
 
 f=1.0/((l1[-1]-l1[0])*31536000)
 omega=np.linspace(fmin,fmax,nbins)
-
+#omega=angular frequency
 n=omega*31536000/(2*np.pi)
 
 
 PS = lomb_scargle(c, y, dy, omega, generalized=True)
-
+#PS=lomb scargle power
 
 
 D = lomb_scargle_bootstrap(c, y, dy, omega, generalized=True,
