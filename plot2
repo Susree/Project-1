@@ -7,7 +7,7 @@ x = np.loadtxt(r"C:\Users\LENOVO\chlorine.txt")
 t= np.loadtxt(r"C:\Users\LENOVO\yplot.txt")
 #t=decay rates
 
-et=0.00009*t
+et=0.00009*(np.ones(66))
 #error per datapoint
 d=np.mean(t)
 #d=mean of decay rates
