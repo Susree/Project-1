@@ -1,0 +1,23 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+x = np.loadtxt(r"C:\Users\LENOVO\chlorine.txt")
+#x=time in years
+t= np.loadtxt(r"C:\Users\LENOVO\yplot.txt")
+#t=decay rates
+
+et=0.00009*t
+#error per datapoint
+d=np.mean(t)
+#d=mean of decay rates
+y=d-t
+    
+fig, ax = plt.subplots()
+plt.errorbar(x, y*100,  yerr=et*100 , marker='o',fmt='.k')
+axes=plt.gca()
+axes.set_ylim([-0.04,0.04])
+axes.set_xlabel('time in years')
+axes.set_ylabel('residual from exponential decay in %')
+ax.hlines(y=0,xmin=2009.95,xmax=2013.28,linewidth=1)
+plt.show()
