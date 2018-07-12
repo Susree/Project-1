@@ -1,0 +1,32 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+x = np.loadtxt(r"C:\Users\LENOVO\Desktop\years.txt")
+#x=years in which data is recorded
+t= np.loadtxt(r"C:\Users\LENOVO\Desktop\decay rates.txt")
+#t=decay rates of Cl36
+i=np.where(t>0.6)
+x1=x[i]
+t1=t[i]
+et=0.0013*(np.ones(359))
+#et=error per datapoint
+
+
+m=np.sum(t/et**2)/np.sum(1/et**2)
+#m=weighted average of decay rates
+y=t1-m
+
+k=y*100
+print(k)
+
+fig, ax = plt.subplots()
+plt.errorbar(x1, k,  yerr=et*100 , marker='o',fmt='.k')
+axes=plt.gca()
+
+axes.set_ylim([-0.6,0.6])
+axes.set_xlabel('time in years')
+axes.set_ylabel('residual from exponential decay in %')
+ax.hlines(y=0,xmin=1982.1055,xmax=1989.9294,linewidth=1)
+plt.show()
