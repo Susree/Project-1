@@ -1,0 +1,82 @@
+import numpy as np
+from matplotlib import pyplot as plt
+from astroML.time_series import\
+    lomb_scargle, lomb_scargle_BIC, lomb_scargle_bootstrap
+
+from astroML.plotting import setup_text_plots
+setup_text_plots(fontsize=8, usetex=False)
+
+
+np.random.seed(0)
+N = 359
+P = 0.3
+
+l = np.loadtxt(r"C:\Users\LENOVO\Desktop\years.txt")
+#l=time in years
+
+
+t = np.loadtxt(r"C:\Users\LENOVO\Desktop\decay rates.txt")
+#t=decay rates
+i=np.where(t>0.6)
+l1=l[i]
+t1=t[i]
+c=(l1-l1[0])*31536000
+m=np.mean(t1)
+y=t1-m
+
+dy =0.0013*np.ones(359)
+
+fmax=np.pi/np.median(c[1:]-c[:-1])
+
+
+
+fmin=2*np.pi/c[-1]
+
+nbins=np.floor(fmax/fmin*10.)
+
+f=1.0/((l1[-1]-l1[0])*31536000)
+omega=np.linspace(fmin,fmax,nbins)
+
+n=omega*31536000/(2*np.pi)
+
+
+PS = lomb_scargle(c, y, dy, omega, generalized=True)
+
+
+
+D = lomb_scargle_bootstrap(c, y, dy, omega, generalized=True,
+                           N_bootstraps=1000, random_state=0)
+sig1, sig5 = np.percentile(D, [99, 95])
+
+
+plt.figure()
+
+
+
+ax1=plt.axes([0.15,0.15,0.8,0.8])
+ax1.plot(n[1:], PS[1:], '-', c='black', lw=1, zorder=1)
+ax1.plot([c[0], c[-1]], [sig1, sig1], ':', c='black')
+ax1.plot([c[0], c[-1]], [sig5, sig5], ':', c='black')
+
+ax1.annotate("", (0.3, 0.65), (0.3, 0.85), ha='center',
+             arrowprops=dict(arrowstyle='->'))
+
+ax1.set_xlim(8,20)
+ax1.set_ylim(0, 0.1)
+
+ax1.set_xlabel(r'frequency in year^-1')
+ax1.set_ylabel('lomb scargle power ')
+
+
+ax2 = ax1.twinx()
+ax2.set_ylim(tuple(lomb_scargle_BIC(ax1.get_ylim(), y, dy)))
+ax2.set_ylabel(r'$\Delta BIC$')
+
+ax1.xaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))
+ax1.xaxis.set_minor_formatter(plt.FormatStrFormatter('%.1f'))
+
+ax1.xaxis.set_major_formatter(plt.FormatStrFormatter('%.3g'))
+
+
+
+plt.show()
